@@ -27,14 +27,36 @@
       <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
     </ul>
+    <button @click="carregarProdutos">Carregar</button>
+    <ul>
+      <li v-for="p in produtos" :key="p.id">{{ p.nome }}</li>
+    </ul>
   </div>
 </template>
 
 <script>
+// import Carrinho from '@/components/Carrinho.vue'
+import store from '../store'
+
 export default {
   name: 'HelloWorld',
+  data: () => {
+    return {
+      // produtos: []
+    }
+  },
   props: {
     msg: String
+  },
+  computed: {
+    produtos: () => {
+      return store.state.carrinho.produtos
+    }
+  },
+  methods: {
+    carregarProdutos: () => {
+      console.log(store.state)
+    }
   }
 }
 </script>
