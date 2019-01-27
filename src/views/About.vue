@@ -5,11 +5,10 @@
   </div>
 </template>
 <script>
-import store from '../store'
 export default {
   computed: {
-    valorTotal: () => {
-      return store.getters.vltotal.toLocaleString('pt-BR')
+    valorTotal: function () {
+      return this.$store.getters.vltotal.toLocaleString('pt-BR')
     }
   }
 }

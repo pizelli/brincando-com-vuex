@@ -2,36 +2,42 @@
   <div>
     <h1>Carrinho</h1>
     <span>Total: R$ {{ vltotal }}</span>
-    <table border="1">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Nome</th>
-          <th>Quant.</th>
-          <th>Preço</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="p in produtos" :key="p.id">
-          <td><button @click="delProduct(p)">{{ p.id }}</button></td>
-          <td>{{ p.nome }}</td>
-          <td>{{ p.qty }}</td>
-          <td>
-            <button @click="minusProduct(p)">-</button>
-            R$ {{ p.preco.toLocaleString('pt-BR') }}
-            <button @click="plusProduct(p)">+</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <ul>
-      <li v-for="p in prods" :key="p.id">{{ p.nome }} - <button @click="addProduct(p)">Add to Cart</button></li>
-    </ul>
+    <div class="container">
+      <div class="flex">
+        <ul>
+          <li v-for="p in prods" :key="p.id">{{ p.nome }} - <button @click="add(p)">Add to Cart</button></li>
+        </ul>
+      </div>
+      <div class="flex">
+        <table border="1">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nome</th>
+              <th>Quant.</th>
+              <th>Preço</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(p, index) in produtos" :key="index">
+              <td><button @click="del(p)">{{ p.id }}</button></td>
+              <td>{{ p.nome }}</td>
+              <td>{{ p.qty }}</td>
+              <td>
+                <button @click="minus(p)">-</button>
+                R$ {{ p.preco.toLocaleString('pt-BR') }}
+                <button @click="plus(p)">+</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import store from '../store'
+import { mapActions } from 'vuex'
 export default {
   name: 'Carrinho',
   data: () => {
@@ -46,30 +52,45 @@ export default {
     }
   },
   methods: {
-    addProduct: function (p) {
-      store.commit('addToCart', p)
+    ...mapActions([
+      'plusProduct',
+      'minusProduct',
+      'addToCart',
+      'removeOfCart'
+    ]),
+
+    add: function (p) {
+      this.addToCart(p)
     },
-    delProduct: function (p) {
-      store.commit('removeOfCart', p)
+    del: function (p) {
+      this.removeOfCart(p)
     },
-    plusProduct: function (p) {
-      store.commit('plusProduct', p)
+    plus: function (p) {
+      this.plusProduct(p)
     },
-    minusProduct: function (p) {
-      store.commit('minusProduct', p)
+    minus: function (p) {
+      this.minusProduct(p)
     }
   },
   computed: {
-    produtos: () => {
-      return store.state.carrinho.produtos
+    produtos: function () {
+      return this.$store.getters.produtos
     },
-    vltotal: () => {
-      return store.getters.vltotal.toLocaleString('pt-BR')
+    vltotal: function () {
+      return this.$store.getters.vltotal.toLocaleString('pt-BR')
     }
   }
 }
 </script>
 
 <style>
-
+.container{
+  display: flex;
+  flex: 1;
+  justify-content: center;
+}
+.flex{
+  display: flex;
+  flex: 1;
+}
 </style>

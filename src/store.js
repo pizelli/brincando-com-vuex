@@ -18,7 +18,6 @@ export default new Vuex.Store({
         return
       }
       state.carrinho.produtos.push(p)
-      console.log(state.carrinho.produtos)
       localStorage.setItem('products', JSON.stringify(state.carrinho.produtos))
     },
     removeOfCart (state, p) {
@@ -30,14 +29,10 @@ export default new Vuex.Store({
       }
       localStorage.setItem('products', JSON.stringify(state.carrinho.produtos))
     },
-    PLUS_PRODUCT: function (state, p) {
+    plusProduct: function (state, p) {
       p.qty++
     },
     minusProduct: function (state, p) {
-      if (p.qty === 1) {
-        this.delProduct(state, p)
-        return
-      }
       p.qty--
     },
     toLocal: function (state) {
@@ -45,11 +40,26 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    plusProduct: (context, p) => {
-      console.log('action plus')
-      context.commit('PLUS_PRODUCT', p)
-      context.commit('toLocal')
-      // cntx.commit('plusProduct')
+    plusProduct: ({ commit }, p) => {
+      commit('plusProduct', p)
+      commit('toLocal')
+    },
+    minusProduct: ({ commit }, p) => {
+      if (p.qty === 1) {
+        commit('removeOfCart', p)
+        commit('toLocal')
+        return
+      }
+      commit('minusProduct', p)
+      commit('toLocal')
+    },
+    addToCart: ({ commit }, p) => {
+      commit('addToCart', p)
+      commit('toLocal')
+    },
+    removeOfCart: ({ commit }, p) => {
+      commit('removeOfCart', p)
+      commit('toLocal')
     }
   },
   getters: {
@@ -60,6 +70,9 @@ export default new Vuex.Store({
         }).reduce((a, v) => a + v)
       }
       return 0.00
+    },
+    produtos: state => {
+      return state.carrinho.produtos
     }
   }
 })
