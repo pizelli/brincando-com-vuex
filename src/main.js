@@ -5,6 +5,10 @@ import store from './store'
 
 Vue.config.productionTip = false
 
+Vue.filter('toReal', function (value) {
+  return value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })
+})
+
 new Vue({
   router,
   store,

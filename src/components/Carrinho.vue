@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Carrinho</h1>
-    <span>Total: R$ {{ vltotal }}</span>
+    <span>Total: R$ {{ vltotal | toReal }}</span>
     <div class="container">
       <div class="flex">
         <ul>
@@ -9,27 +9,39 @@
         </ul>
       </div>
       <div class="flex">
-        <table border="1">
+        <table border="0">
           <thead>
             <tr>
-              <th>#</th>
+              <th>#Id</th>
               <th>Nome</th>
               <th>Quant.</th>
               <th>Preço</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(p, index) in produtos" :key="index">
-              <td><button @click="del(p)">{{ p.id }}</button></td>
+              <td>{{ p.id }}</td>
               <td>{{ p.nome }}</td>
               <td>{{ p.qty }}</td>
               <td>
                 <button @click="minus(p)">-</button>
-                R$ {{ p.preco.toLocaleString('pt-BR') }}
+                R$ {{ p.preco | toReal }}
                 <button @click="plus(p)">+</button>
               </td>
+              <td><button @click="del(p)">X</button></td>
+            </tr>
+            <tr v-if="produtos.length <= 0">
+              <td colspan="5">Nenhum produto no carrinho.</td>
             </tr>
           </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5" class="text-right">
+                <span>Total: R$ {{ vltotal | toReal }}</span>
+              </td>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </div>
@@ -77,13 +89,17 @@ export default {
       return this.$store.getters.produtos
     },
     vltotal: function () {
-      return this.$store.getters.vltotal.toLocaleString('pt-BR')
+      return this.$store.getters.vltotal
     }
   }
 }
 </script>
 
 <style>
+*{
+  margin: 0;
+  padding: 0;
+}
 .container{
   display: flex;
   flex: 1;
@@ -92,5 +108,36 @@ export default {
 .flex{
   display: flex;
   flex: 1;
+}
+.text-right{
+  text-align: right;
+}
+table{
+  border: 1px solid cornflowerblue;
+  background-color: cornflowerblue;
+  margin: 0;
+  padding: 0;
+  width: 500px;
+}
+thead th {
+  height: 30px;
+}
+tbody td{
+  background-color: white;
+  padding: 5px 10px;
+  color: #666;
+}
+tbody tr:nth-of-type(even) td{
+  background-color: #ccc;
+}
+button{
+  padding: 5px 10px;
+  background-color: #f2f2f2;
+  color: #666;
+  border: 1px solid #ccc;
+}
+tfoot, td{
+  color: white;
+  padding: 3px 10px;
 }
 </style>
